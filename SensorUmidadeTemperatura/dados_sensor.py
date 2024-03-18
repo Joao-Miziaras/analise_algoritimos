@@ -3,12 +3,19 @@ import random
 import time
 from datetime import datetime
 
-def gerar_temperatura():
+def get_temp():
     return round(random.uniform(25.0, 30.0), 2)
 
-def gerar_umidade():
-    return round(random.uniform(77, 88))
+def get_umi():
+    interval1 = (77, 80)  
+    interval2 = (80, 88)  
     
+    prob_interval1 = 0.2  
+    prob_interval2 = 0.3  
+
+    interval_escolhido = random.choices([interval1, interval2], weights=[prob_interval1, prob_interval2])[0]
+
+    return round(random.uniform(*interval_escolhido), 2)
 def conectar_bd():
     return mysql.connector.connect(
         host="localhost",
@@ -17,7 +24,7 @@ def conectar_bd():
         database="grupo6"
     )
 
-def inserir_dados_temperatura(temperatura, umidade, horario):
+def insert_data(temperatura, umidade, horario):
     conexao = conectar_bd()
     cursor = conexao.cursor()
     sql = "INSERT INTO dados_sensor (id_sensor, porcent_umidade, temperatura, horario_da_coleta) VALUES (%s, %s, %s, %s)"
@@ -27,12 +34,12 @@ def inserir_dados_temperatura(temperatura, umidade, horario):
     conexao.close()
 
 while True:
-    temperatura = gerar_temperatura()
-    umidade = gerar_umidade()
+    temperatura = get_temp()
+    umidade = get_umi()
     horario = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print("Id do sensor: 1")
     print(f"Percentual de umidade: {umidade}%")
     print("Temperatura:", temperatura)
     print("Horário da coleta:", horario)
-    #inserir_dados_temperatura(temperatura, umidade, horario)
+    insert_data(temperatura, umidade, horario)
     time.sleep(5)
