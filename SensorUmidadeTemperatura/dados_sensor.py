@@ -18,6 +18,7 @@ def get_umi():
     interval_escolhido = random.choices([interval1, interval2, interval3], weights=[prob_interval1, prob_interval2, prob_interval3])[0]
 
     return round(random.uniform(*interval_escolhido), 2)
+
 def conectar_bd():
     return mysql.connector.connect(
         host="localhost",
