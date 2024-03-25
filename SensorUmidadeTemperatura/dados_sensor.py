@@ -1,6 +1,7 @@
 import mysql.connector
 import random
 import time
+import matplotlib as plt
 from datetime import datetime
 
 def get_temp():
@@ -39,7 +40,7 @@ def insert_data(temperatura, umidade, horario):
 contador_alerta = 0
 id_dado = 0
 try:
-    while True:
+    while id_dado < 10:
         id_dado += 1
         temperatura = get_temp()
         umidade = get_umi()
@@ -50,7 +51,7 @@ try:
         print(f"Percentual de umidade: {umidade}%")
         print("Temperatura:", temperatura)
         print("Horário da coleta:", horario)
-        #insert_data(temperatura, umidade, horario)
+        insert_data(temperatura, umidade, horario)
         if umidade > 88.0:
             print("ALERTA: Condições climáticas desfavoráveis")
             contador_alerta += 1
