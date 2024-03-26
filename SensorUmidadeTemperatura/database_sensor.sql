@@ -3,7 +3,7 @@ USE grupo6;
 CREATE TABLE dados_sensor (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_sensor INT,
-    porcent_umidade INT,
+    porcent_umidade FLOAT,
     temperatura FLOAT,
     horario_da_coleta DATETIME
 );

@@ -1,24 +1,37 @@
 import mysql.connector
 import random
 import time
-import matplotlib as plt
 from datetime import datetime
 
 def get_temp():
     return round(random.uniform(25.0, 30.0), 2)
 
-def get_umi():
+import random
+
+def get_umi(prev_value=None):
     interval1 = (77, 80)  
     interval2 = (80, 88)  
     interval3 = (88, 100)  
     
-    prob_interval1 = 0.3  
-    prob_interval2 = 0.4  
+    # Ajuste das probabilidades para tornar os valores mais consistentes
+    prob_interval1 = 0.1  
+    prob_interval2 = 0.6  
     prob_interval3 = 0.1  
 
-    interval_escolhido = random.choices([interval1, interval2, interval3], weights=[prob_interval1, prob_interval2, prob_interval3])[0]
+    if prev_value is None:
+        interval_escolhido = random.choices([interval1, interval2, interval3], weights=[prob_interval1, prob_interval2, prob_interval3])[0]
+        return round(random.uniform(*interval_escolhido), 2)
+    else:
+        if prev_value < 80:
+            offset = random.uniform(-1, 1)
+        elif prev_value < 88:
+            offset = random.uniform(-1, 1)
+        else:
+            offset = random.uniform(-1, 1)
+        
+        new_value = prev_value + offset
+        return round(max(min(new_value, 100), 77), 2)
 
-    return round(random.uniform(*interval_escolhido), 2)
 
 def conectar_bd():
     return mysql.connector.connect(
@@ -39,11 +52,12 @@ def insert_data(temperatura, umidade, horario):
 
 contador_alerta = 0
 id_dado = 0
+umidade= None
 try:
-    while id_dado < 10:
+    while True:
         id_dado += 1
         temperatura = get_temp()
-        umidade = get_umi()
+        umidade = get_umi(umidade)
         horario = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print("-" * 30)
         print("Id do sensor: 1")
@@ -52,9 +66,9 @@ try:
         print("Temperatura:", temperatura)
         print("Horário da coleta:", horario)
         insert_data(temperatura, umidade, horario)
+        time.sleep(10)
         if umidade > 88.0:
             print("ALERTA: Condições climáticas desfavoráveis")
             contador_alerta += 1
-        time.sleep(5)
 except KeyboardInterrupt:
     print("Contador de alert de umidade alta:", contador_alerta)
