@@ -50,25 +50,16 @@ def insert_data(temperatura, umidade, horario):
     conexao.commit()
     conexao.close()
 
-contador_alerta = 0
-id_dado = 0
-umidade= None
-try:
-    while True:
-        id_dado += 1
-        temperatura = get_temp()
-        umidade = get_umi(umidade)
-        horario = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print("-" * 30)
-        print("Id do sensor: 1")
-        print("ID do dado:", id_dado)
-        print(f"Percentual de umidade: {umidade}%")
-        print("Temperatura:", temperatura)
-        print("Horário da coleta:", horario)
-        insert_data(temperatura, umidade, horario)
-        time.sleep(10)
-        if umidade > 88.0:
-            print("ALERTA: Condições climáticas desfavoráveis")
-            contador_alerta += 1
-except KeyboardInterrupt:
-    print("Contador de alert de umidade alta:", contador_alerta)
+def get_data():
+    umidade= None
+    temperatura = get_temp()
+    umidade = get_umi(umidade)
+    horario = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    insert_data(temperatura, umidade, horario)
+    time.sleep(10)
+    return {
+        'umidade': umidade,
+        'temperatura': temperatura,
+        'horario': horario
+    }
+
