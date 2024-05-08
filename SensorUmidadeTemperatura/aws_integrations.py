@@ -16,6 +16,8 @@ s3_client = session.client("s3")
 bucket_raw = session.resource("s3").Bucket("biosentinel-bucket-raw")
 bucket_raw_name = "biosentinel-bucket-raw"
 
+bucket_trusted = session.resource("s3").Bucket("BUCKET_NAME_TRUSTED")
+bucket_trusted_name = "BUCKET_NAME_TRUSTED"
 
 def send_json_to_s3(json_data: dict, json_name: str):    
     s3_client.put_object(
