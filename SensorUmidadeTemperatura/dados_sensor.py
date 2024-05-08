@@ -55,8 +55,6 @@ def get_data():
     temperatura = get_temp()
     umidade = get_umi(umidade)
     horario = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    insert_data(temperatura, umidade, horario)
-    time.sleep(10)
     return {
         'umidade': umidade,
         'temperatura': temperatura,
