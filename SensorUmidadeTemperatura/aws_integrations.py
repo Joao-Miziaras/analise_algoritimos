@@ -6,18 +6,18 @@ import boto3
 from boto3.resources.collection import ResourceCollection
 
 session = boto3.Session(
-    aws_access_key_id=getenv("345137894335"),
-    aws_secret_access_key=getenv("AWS_SECRET_ACCESS_KEY"),
-    aws_session_token=getenv("AWS_SESSION_TOKEN")
+    aws_access_key_id="ASIAYOHTNAJUPE3S4ONJ",
+    aws_secret_access_key="gHDAvPhgZplZ/Rbxiu9eDfBbF7eKGGLnLXEYJo0s",
+    aws_session_token="IQoJb3JpZ2luX2VjEIT//////////wEaCXVzLXdlc3QtMiJHMEUCIQDqUqf4U8IdUkd98iRt4UMkFR7A0Rh9DCplc63LAGId4QIgPVv2QucrqXW7QegyDO6LFrQelMIcup3I6UnLwik8qAIqwQII3f//////////ARACGgw1ODAzMzEwNDU0ODAiDFTIQbRLWo7XliXFLiqVAvkfLCsak0iJpICYRulMyFNtdZQjhAxYDCUjkXVk6MFeuNzmlt0Vawy1FsQnQpRG5WRQem8JFvN9Qa/TlqCfNdprJMqJ10KBlwwydKq+MMtRdJuAZI4PjwOQTxgyfRc4+GF5DMdFrwoVFJAlYFwrQGFiZrEO2E57EKgKEgCKK9Bk9GlOc6soHcZWnSsFezeIwXBfUnturn4608mw8GkXuRd5vsT5m+/84467L79omiH3HS1L6MPs/LNsVWTiIfE0ToQyA5O9/KFHgtEAsgzB3QpOMKTAS5DE1SywSQv55iG1T2GvL9t3X+zWp9MzzylgLMUmylB3uQvPus/YnAWPoJBabaZ3IIENEgmmQNBtNJBheSKh66gwxo/qsQY6nQEKkfTSgNnm5zgYzZ2/SZ/Yph2jflXBWJTxqbtlrg9TeFztPsgVAfMPDmp0UFe8Y+BtIYvmBHdLbfdj6dI0N0raUjGaHMQPQBIhRwbzQwK+csWWf13tLKLpEgMwkoFrVa1oQ+c7tqhgwOAxIworimS1jtVSNUM8vfvMdX3sl8h4Op0f1/XVPiB0RFndo2C+grMLAK0Fcb3U9NLh7LJW"
 )
 
 s3_client = session.client("s3")
 
-bucket_raw = session.resource("s3").Bucket(getenv("BUCKET_NAME_RAW"))
-bucket_raw_name = getenv("BUCKET_NAME_RAW")
+bucket_raw = session.resource("s3").Bucket("biosentinel-bucket-raw")
+bucket_raw_name = "biosentinel-bucket-raw"
 
-bucket_trusted = session.resource("s3").Bucket(getenv("BUCKET_NAME_TRUSTED"))
-bucket_trusted_name = getenv("BUCKET_NAME_TRUSTED")
+bucket_trusted = session.resource("s3").Bucket("BUCKET_NAME_TRUSTED")
+bucket_trusted_name = "BUCKET_NAME_TRUSTED"
 
 def send_json_to_s3(json_data: dict, json_name: str):    
     s3_client.put_object(
