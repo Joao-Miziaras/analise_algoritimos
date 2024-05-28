@@ -39,4 +39,5 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
+        file: /SensorUmidadeTemperatura/dockerfile
         tags: joaomiziaraspt/simulator-humidity:latest
