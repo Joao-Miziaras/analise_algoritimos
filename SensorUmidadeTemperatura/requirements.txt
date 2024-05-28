@@ -1,9 +1,3 @@
-logging
-json
-os
-boto3
-boto3.resources.collection
-mysql.connector
-random
-time
-datetime
+boto3==1.26.153
+mysql-connector-python==8.0.33
+
