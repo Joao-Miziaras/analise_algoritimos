@@ -2,11 +2,11 @@ FROM python:3.6.4-alpine3.7
 
 WORKDIR /SensorUmidadeTemperatura
 
-ADD ./SensorUmidadeTemperatura /SensorUmidadeTemperatura
+ADD ./SensorUmidadeTemperatura ./
   
-COPY . .
+COPY ./requirements.txt ./ 
 
-RUN pip install -r SensorUmidadeTemperatura/requirements.txt
+RUN pip install -r /requirements.txt
 
 CMD ["python", "app.py"]
 
