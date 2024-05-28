@@ -4,9 +4,9 @@ WORKDIR /SensorUmidadeTemperatura
 
 ADD ./SensorUmidadeTemperatura /SensorUmidadeTemperatura
   
-COPY SensorUmidadeTemperatura/requirements.txt 
+COPY ..
 
-RUN pip install -r /requirements.txt
+RUN pip install -r SensorUmidadeTemperatura/requirements.txt
 
 CMD ["python", "app.py"]
 
