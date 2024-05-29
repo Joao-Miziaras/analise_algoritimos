@@ -165,6 +165,13 @@ Resources:
           sudo apt update -y
           sudo apt install -y docker.io python3 python3-pip git
           sudo pip3 install docker-compose
+          sudo apt install -y awscli
+          aws s3api put-object --bucket bucket-${AWS::StackName}-trusted --key geolocalizacao/
+          aws s3api put-object --bucket bucket-${AWS::StackName}-trusted --key temperatura-batimento/
+          aws s3api put-object --bucket bucket-${AWS::StackName}-trusted --key temperatura-umidade/
+          aws s3api put-object --bucket bucket-${AWS::StackName}-trusted --key pressao-arterial/
+          aws s3api put-object --bucket bucket-${AWS::StackName}-trusted --key som/
+          aws s3api put-object --bucket bucket-${AWS::StackName}-trusted --key presenca/
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
       Tags:
@@ -230,26 +237,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub bucket-${AWS::StackName}-trusted
-
-  # S3Bucket2Policy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     Bucket: !Ref S3Bucket2
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Sid: AllowFolderAccess
-  #           Effect: Allow
-  #           Principal: '*'
-  #           Action:
-  #             - s3:GetObject
-  #           Resource:
-  #             - !Sub arn:aws:s3:::${S3Bucket2}/geolocalizacao/*
-  #             - !Sub arn:aws:s3:::${S3Bucket2}/temperatura-batimento/*
-  #             - !Sub arn:aws:s3:::${S3Bucket2}/temperatura-umidade/*
-  #             - !Sub arn:aws:s3:::${S3Bucket2}/pressao-arterial/*
-  #             - !Sub arn:aws:s3:::${S3Bucket2}/som/*
-  #             - !Sub arn:aws:s3:::${S3Bucket2}/presenca/*
   S3Bucket3:
     Type: AWS::S3::Bucket
     Properties:
