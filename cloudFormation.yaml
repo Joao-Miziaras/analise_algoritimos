@@ -60,7 +60,7 @@ Parameters:
   Ec2KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Chave de acesso a instancia
-    Default: default-key-pair-name
+    Default: acess-key
   Ec2AmiId:
     Type: String
     Description: Id da AMI
@@ -82,13 +82,13 @@ Resources:
       CidrBlock: !Ref VpcCidr
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-${Client}
+          Value: !Sub "${AWS::StackName}-${Client}"
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-${Client}
+          Value: !Sub "${AWS::StackName}-${Client}"
   InternetGatewayAttachment:
     DependsOn: [InternetGateway, Vpc]
     Type: AWS::EC2::VPCGatewayAttachment
@@ -102,7 +102,7 @@ Resources:
       VpcId: !Ref Vpc
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-${Client}-public
+          Value: !Sub "${AWS::StackName}-${Client}-public"
   PublicRouteTableRouteInternet:
     DependsOn: [PublicRouteTable, InternetGateway]
     Type: AWS::EC2::Route
@@ -119,7 +119,7 @@ Resources:
       VpcId: !Ref Vpc
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-${Client}-public
+          Value: !Sub "${AWS::StackName}-${Client}-public"
   RouteTableAssociationPublicSubnet:
     DependsOn: [PublicRouteTable, PublicSubnet]
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -150,7 +150,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: !Sub sg-${AWS::StackName}
+          Value: !Sub "sg-${AWS::StackName}"
   Instance1:
     DependsOn: [RouteTableAssociationPublicSubnet, InstanceSecurityGroup]
     Type: AWS::EC2::Instance
@@ -166,14 +166,11 @@ Resources:
           sudo apt update -y
           sudo apt install -y docker.io python3 python3-pip git
           sudo pip3 install docker-compose
-          sudo apt install -y mysql-server
-          sudo systemctl start mysql
-          sudo systemctl enable mysql
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-${Client}-raw
+          Value: !Sub "${AWS::StackName}-${Client}-raw"
   Instance2:
     DependsOn: [RouteTableAssociationPublicSubnet, InstanceSecurityGroup]
     Type: AWS::EC2::Instance
@@ -208,45 +205,24 @@ Resources:
           mkdir /opt/jupyter/script
           touch /opt/jupyter/script/start.sh
           echo '#!/bin/bash' >> /opt/jupyter/script/start.sh
-          echo '/usr/bin/python3 -m notebook --NotebookApp.notebook_dir=/opt/jupyter/notebook --NotebookApp.password=$(/usr/bin/python3 -c "from notebook.auth import passwd; print(passwd(\"urubu100\"))")  --allow-root --ip 0.0.0.0 --port 80' >> /opt/jupyter/script/start.sh
+          echo '/usr/bin/python3 -m notebook --NotebookApp.notebook_dir=/opt/jupyter/notebook --NotebookApp.password=$(/usr/bin/python3 -c "from notebook.auth import passwd; print(passwd("${Ec2JupyterPassword}"))")  --allow-root --ip 0.0.0.0 --port 80' >> /opt/jupyter/script/start.sh
           chmod +x /opt/jupyter/script/start.sh
           systemctl daemon-reload
           systemctl start jupyter
           systemctl enable jupyter
-  EC2Service:
-    Type: AWS::EC2::Instance
-    Metadata:
-      AWS::CloudFormation::Init:
-        configSets:
-          default:
-            - install_docker
-        install_docker:
-          files:
-            "/tmp/install.sh":
-              content: !Sub
-                - |
-                  #!/bin/bash
-                  # Install Docker 
-                  sudo yum update -y
-                  sudo amazon-linux-extras install docker
-                  sudo service docker start
-                  sudo usermod -a -G docker ec2-user
-              mode: "000755"
-              owner: root
-              group: root
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-${Client}-trusted
+          Value: !Sub "${AWS::StackName}-${Client}-trusted"
   S3Bucket1:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub bucket-${AWS::StackName}-raw
+      BucketName: !Sub "bucket-${AWS::StackName}-raw"
       AccessControl: Private
       Tags:
         - Key: Name
-          Value: !Sub bucket-${AWS::StackName}-raw 
+          Value: !Sub "bucket-${AWS::StackName}-raw"  
   S3Bucket2:
     Type: AWS::S3::Bucket
     Properties:
@@ -254,19 +230,32 @@ Resources:
       AccessControl: Private
       Tags:
         - Key: Name
-          Value: !Sub bucket-${AWS::StackName}-trusted 
-      BucketPolicy:
-        Version: "2012-10-17"
+          Value: !Sub bucket-${AWS::StackName}-trusted
+
+  S3Bucket2Policy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket2
+      PolicyDocument:
+        Version: '2012-10-17'
         Statement:
           - Sid: AllowFolderAccess
             Effect: Allow
-            Principal: "*"
+            Principal: '*'
             Action:
-              - "s3:GetObject"
+              - s3:GetObject
             Resource:
-              - !Sub "arn:aws:s3:::${S3Bucket2}/geolocalizacao/*"
-              - !Sub "arn:aws:s3:::${S3Bucket2}/temperatura-batimento/*"
-              - !Sub "arn:aws:s3:::${S3Bucket2}/temperatura-umidade/*"
-              - !Sub "arn:aws:s3:::${S3Bucket2}/pressao-arterial/*"
-              - !Sub "arn:aws:s3:::${S3Bucket2}/som/*"
-              - !Sub "arn:aws:s3:::${S3Bucket2}/presenca/*"
+              - !Sub arn:aws:s3:::${S3Bucket2}/geolocalizacao/*
+              - !Sub arn:aws:s3:::${S3Bucket2}/temperatura-batimento/*
+              - !Sub arn:aws:s3:::${S3Bucket2}/temperatura-umidade/*
+              - !Sub arn:aws:s3:::${S3Bucket2}/pressao-arterial/*
+              - !Sub arn:aws:s3:::${S3Bucket2}/som/*
+              - !Sub arn:aws:s3:::${S3Bucket2}/presenca/*
+  S3Bucket3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "bucket-${AWS::StackName}-client"
+      AccessControl: Private
+      Tags:
+        - Key: Name
+          Value: !Sub "bucket-${AWS::StackName}-client"
