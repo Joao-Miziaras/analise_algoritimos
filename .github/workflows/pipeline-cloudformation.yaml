@@ -21,5 +21,5 @@ jobs:
     - name: Deploy CloudFormation stack
       run: |
         aws cloudformation deploy \
-          --template-file cloudFormation.yaml \
+          --template-file ./cloudFormation.yaml \
           --stack-name stack-aws-grupo6 \
