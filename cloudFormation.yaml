@@ -36,7 +36,7 @@ Metadata:
       Ec2IamInstanceProfile:
         default: IAM Instance Profile Id
       Ec2JupyterPassword:
-        default: urubu100
+        default: Senha do Jupyter
 
 Parameters:
   Client:
@@ -246,25 +246,25 @@ Resources:
         - Key: Name
           Value: !Sub bucket-${AWS::StackName}-raw 
   S3Bucket2:
-  Type: AWS::S3::Bucket
-  Properties:
-    BucketName: !Sub bucket-${AWS::StackName}-trusted
-    AccessControl: Private
-    Tags:
-      - Key: Name
-        Value: !Sub bucket-${AWS::StackName}-trusted 
-    BucketPolicy:
-      Version: "2012-10-17"
-      Statement:
-        - Sid: AllowFolderAccess
-          Effect: Allow
-          Principal: "*"
-          Action:
-            - "s3:GetObject"
-          Resource:
-            - !Sub "arn:aws:s3:::${S3Bucket}/geolocalizacao/*"
-            - !Sub "arn:aws:s3:::${S3Bucket}/temperatura-batimento/*"
-            - !Sub "arn:aws:s3:::${S3Bucket}/temperatura-umidade/*"
-            - !Sub "arn:aws:s3:::${S3Bucket}/pressao-arterial/*"
-            - !Sub "arn:aws:s3:::${S3Bucket}/som/*"
-            - !Sub "arn:aws:s3:::${S3Bucket}/presenca/*"
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub bucket-${AWS::StackName}-trusted
+      AccessControl: Private
+      Tags:
+        - Key: Name
+          Value: !Sub bucket-${AWS::StackName}-trusted 
+      BucketPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowFolderAccess
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+            Resource:
+              - !Sub "arn:aws:s3:::${S3Bucket2}/geolocalizacao/*"
+              - !Sub "arn:aws:s3:::${S3Bucket2}/temperatura-batimento/*"
+              - !Sub "arn:aws:s3:::${S3Bucket2}/temperatura-umidade/*"
+              - !Sub "arn:aws:s3:::${S3Bucket2}/pressao-arterial/*"
+              - !Sub "arn:aws:s3:::${S3Bucket2}/som/*"
+              - !Sub "arn:aws:s3:::${S3Bucket2}/presenca/*"
