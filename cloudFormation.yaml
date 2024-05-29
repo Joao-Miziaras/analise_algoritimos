@@ -36,7 +36,7 @@ Metadata:
       Ec2IamInstanceProfile:
         default: IAM Instance Profile Id
       Ec2JupyterPassword:
-        default: Senha Jupyter
+        default: urubu100
 
 Parameters:
   Client:
