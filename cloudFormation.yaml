@@ -219,7 +219,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub "bucket-${AWS::StackName}-raw"
-      AccessControl: public
+      AccessControl: Public
       Tags:
         - Key: Name
           Value: !Sub "bucket-${AWS::StackName}-raw"  
@@ -227,7 +227,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub bucket-${AWS::StackName}-trusted
-      AccessControl: public
+      AccessControl: Public
       Tags:
         - Key: Name
           Value: !Sub bucket-${AWS::StackName}-trusted
@@ -255,7 +255,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub "bucket-${AWS::StackName}-client"
-      AccessControl: public
+      AccessControl: Public
       Tags:
         - Key: Name
           Value: !Sub "bucket-${AWS::StackName}-client"
