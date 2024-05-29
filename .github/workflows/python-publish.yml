@@ -47,17 +47,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - name: aws connection and docker deploy in ec2
-      uses: appleboy/ssh-action@v1.0.3
+    - id: deploy
+      name: Deploy
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v1.0.1
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws_default_region: us-east-1
         script: |
-          docker stop simulator-humidity || true
-          docker rm simulator-humidity || true
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
-          docker run -d --name simulator-humidity ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
+           docker stop simulator-humidity || true
+           docker rm simulator-humidity || true
+           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
+           docker run -d --name simulator-humidity ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
+    # - name: aws connection and docker deploy in ec2
+    #   uses: appleboy/ssh-action@v1.0.3
+    #   with:
+    #     host: ${{ secrets.HOST }}
+    #     username: ${{ secrets.USERNAME }}
+    #     password: ${{ secrets.PASSWORD }}
+    #     port: ${{ secrets.PORT }}
+    #     script: |
+    #       docker stop simulator-humidity || true
+    #       docker rm simulator-humidity || true
+    #       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
+    #       docker run -d --name simulator-humidity ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
         
         
