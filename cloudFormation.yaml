@@ -68,13 +68,12 @@ Parameters:
   Ec2IamInstanceProfile:
     Type: String
     Description: O nome do Instance Profile
-    Default: EMR_EC2_DefaultRole
+    Default: LabInstanceProfile
   Ec2JupyterPassword:
     Type: String
     NoEcho: true
     Description: A senha de acesso ao jupyter
     Default: urubu100
-
 Resources:
   Vpc:
     Type: AWS::EC2::VPC
@@ -179,7 +178,7 @@ Resources:
       ImageId: !Ref Ec2AmiId
       InstanceType: t2.small
       SubnetId: !Ref PublicSubnet
-      IamInstanceProfile: !Ref Ec2IamInstanceProfile
+      IamInstanceProfile: EMR_EC2_DefaultRole
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
