@@ -60,7 +60,7 @@ Parameters:
   Ec2KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Chave de acesso a instancia
-    Default: acess-key
+    Default: chave-acesso-teste
   Ec2AmiId:
     Type: String
     Description: Id da AMI
