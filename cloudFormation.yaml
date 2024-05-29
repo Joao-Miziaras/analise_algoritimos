@@ -60,6 +60,7 @@ Parameters:
   Ec2KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Chave de acesso a instancia
+    Default: default-key-pair-name
   Ec2AmiId:
     Type: String
     Description: Id da AMI
@@ -72,6 +73,7 @@ Parameters:
     Type: String
     NoEcho: true
     Description: A senha de acesso ao jupyter
+    Default: urubu100
 
 Resources:
   Vpc:
