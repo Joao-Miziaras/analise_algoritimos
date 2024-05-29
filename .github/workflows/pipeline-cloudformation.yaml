@@ -1,25 +1,38 @@
-name: Deploy to AWS CloudFormation  
-on:
+
+name: 'Deploy to AWS CloudFormation'
+
+on: 
   push:
-    branches:
-      - main
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 jobs:
+  # This workflow contains a single job called "deploy"
   deploy:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code from master branch
+        uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      # Configure AWS Credential
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+          aws-region: us-east-1
 
-    - name: Deploy CloudFormation stack
-      run: |
-        aws cloudformation deploy \
-          --template-file ./cloudFormation.yaml \
-          --stack-name stack-aws-grupo6 \
+      # Deploy to AWS CloudFormation
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: bio-sentinel-stack
+          template: ./cloudFormation.yaml
+          no-fail-on-empty-changeset: "1"
