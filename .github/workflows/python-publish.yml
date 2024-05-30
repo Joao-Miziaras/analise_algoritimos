@@ -48,29 +48,21 @@ jobs:
     needs: build
     steps:
     - id: deploy
-      name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v1.0.1
+
+    - name: Install SSH client
+      run: sudo apt-get install -y openssh-client
+
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws_default_region: us-east-1
-        script: |
-           docker stop simulator-humidity || true
-           docker rm simulator-humidity || true
-           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
-           docker run -d --name simulator-humidity ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
-    # - name: aws connection and docker deploy in ec2
-    #   uses: appleboy/ssh-action@v1.0.3
-    #   with:
-    #     host: ${{ secrets.HOST }}
-    #     username: ${{ secrets.USERNAME }}
-    #     password: ${{ secrets.PASSWORD }}
-    #     port: ${{ secrets.PORT }}
-    #     script: |
-    #       docker stop simulator-humidity || true
-    #       docker rm simulator-humidity || true
-    #       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
-    #       docker run -d --name simulator-humidity ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
-        
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/simulator-humidity:latest
+          docker stop myapp || true
+          docker rm myapp || true
+          docker run -d --name myapp -p 80:80 ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+        EOF
         
